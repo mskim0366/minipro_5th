@@ -1,0 +1,84 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: member
+          uri: http://localhost:8082
+          predicates:
+            - Path=/users/**, /memberInfos/**
+        - id: author
+          uri: http://localhost:8083
+          predicates:
+            - Path=/authors/**, /authorLists/**
+        - id: book
+          uri: http://localhost:8084
+          predicates:
+            - Path=/books/**, /bookInfos/**
+        - id: bookworkflow
+          uri: http://localhost:8085
+          predicates:
+            - Path=, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: member
+          uri: http://member:8080
+          predicates:
+            - Path=/users/**, 
+        - id: author
+          uri: http://author:8080
+          predicates:
+            - Path=/authors/**, 
+        - id: book
+          uri: http://book:8080
+          predicates:
+            - Path=/books/**, 
+        - id: bookworkflow
+          uri: http://bookworkflow:8080
+          predicates:
+            - Path=, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
